@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Huellitas Vet | Gentelella</title>
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.css}">
+    <link rel="stylesheet" th:href="@{/css/nprogress.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.min.css}">
+    <th:block layout:fragment="css"></th:block>
+</head>
+
+<body class="nav-md">
+    <div class="container body">
+        <div class="main_container">
+            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+            <div th:replace="~{fragments/top_nav :: top_nav}"></div>
+            <div class="right_col" role="main">
+                <div class="">
+                    <div class="page-title">
+                        <div class="title_left">&nbsp;</div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2 layout:fragment="panel_title">
+                                        Título del Panel
+                                    </h2>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content" layout:fragment="content">
+                                    Add content here.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="~{fragments/footer :: footer}"></div>
+            <div id="modalContainer"></div>
+        </div>
+    </div>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js/sweetalert.js}"></script>
+    <script th:src="@{/js/fastclick.js}"></script>
+    <script th:src="@{/js/nprogress.js}"></script>
+    <script th:src="@{/js/functions.js}"></script>
+    <script th:src="@{/js/custom.min.js}"></script>
+    <th:block layout:fragment="js"></th:block>
+</body>
+
+</html>

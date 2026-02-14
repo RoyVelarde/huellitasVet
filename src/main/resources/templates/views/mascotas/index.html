@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/gentelella}">
+
+<head>
+    <title>Inicio - Huellitas Vet</title>
+</head>
+
+<body>
+    <th:block layout:fragment="panel_title">
+        <h2>Gestionar Mascotas</h2>
+    </th:block>
+    <div layout:fragment="content" class="mb-5">
+        <div class="mt-4 mb-4">
+            <button type="button" class="btn btn-dark btn-lg" onclick="abrirModal('/mascotas/agregar')">
+                <i class="fa fa-plus-circle mr-2"></i> NUEVA MASCOTA
+            </button>
+        </div>
+        <div th:if="${#lists.isEmpty(mascotas)}" class="alert alert-primary alert-dismissible fade show" role="alert">
+            No se encontraron registros de mascotas en la base de datos.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div th:unless="${#lists.isEmpty(mascotas)}" class="table-responsive">
+            <table class="table jambo_table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th class="text-center">DUEÑO</th>
+                        <th class="text-center">NOMBRE DE MASCOTA</th>
+                        <th class="text-center">ESPECIE</th>
+                        <th class="text-center">RAZA</th>
+                        <th class="text-center">GÉNERO</th>
+                        <th class="text-center">DESCRIPCIÓN</th>
+                        <th class="text-center">ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="mascota : ${mascotas}">
+                        <td th:text="${mascota.idMascota}" class="align-middle text-center"></td>
+                        <td th:text="|${mascota.persona.nombres} ${mascota.persona.apellidos}|"
+                            class="align-middle text-capitalize"></td>
+                        <td th:text="${mascota.nombre}" class="align-middle text-capitalize"></td>
+                        <td th:text="${mascota.especie}" class="align-middle text-capitalize"></td>
+                        <td th:text="${mascota.raza}" class="align-middle text-capitalize"></td>
+                        <td th:text="${mascota.genero}" class="align-middle text-capitalize"></td>
+                        <td th:text="${mascota.descripcion}" class="align-middle"></td>
+                        <td class="align-middle text-center">
+                            <a href="javascript:void(0)" class="text-info mr-2"
+                                th:onclick="|abrirModal('/mascotas/editar/${mascota.idMascota}')|" title="Editar">
+                                <i class="fa fa-pencil fa-lg"></i>
+                            </a>
+                            <a href="javascript:void(0)" class="text-danger ml-2"
+                                th:onclick="|eliminarData('/mascotas/eliminar/${mascota.idMascota}')|" title="Eliminar">
+                                <i class="fa fa-trash-o fa-lg"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
