@@ -1,7 +1,6 @@
 package com.veterinaria.huellitasVet.controllers;
 
 import org.springframework.ui.Model;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.veterinaria.huellitasVet.services.PersonaService;
 import com.veterinaria.huellitasVet.services.MascotaService;
 import com.veterinaria.huellitasVet.models.Mascota;
+import com.veterinaria.huellitasVet.models.Persona;
+
 import jakarta.validation.Valid;
 
 @Controller
@@ -39,6 +40,13 @@ public class MascotaController {
         return "views/mascotas/agregar :: modalFormulario";
     }
 
+    @GetMapping("/nuevo")
+    public String nuevo(Model model) {
+        model.addAttribute("mascota", new Mascota());
+        model.addAttribute("personas", personaService.listar());
+        return "views/mascotas/agregar :: modalFormulario";
+    }
+
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) {
         model.addAttribute("personas", personaService.listar());
@@ -53,9 +61,15 @@ public class MascotaController {
             mascotaService.eliminar(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Ocurrió un error inesperado al intentar eliminar el registro.");
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/buscar-duenio/{dni}")
+    @ResponseBody
+    public ResponseEntity<Persona> buscarDuenio(@PathVariable String dni) {
+        Persona persona = personaService.buscarPorDni(dni);
+        return ResponseEntity.ok(persona);
     }
 
     @PostMapping("/guardar")
@@ -63,7 +77,7 @@ public class MascotaController {
     public ResponseEntity<?> guardar(@Valid @ModelAttribute Mascota mascota) {
         try {
             mascotaService.guardar(mascota);
-            return ResponseEntity.ok("Los datos se han guardado correctamente.");
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }

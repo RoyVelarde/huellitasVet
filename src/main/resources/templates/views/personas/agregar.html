@@ -2,11 +2,11 @@
     aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-dark">
-                <h5 class="modal-title text-white">
-                    <i class="fa fa-user-plus mr-2"></i> DATOS DE LA PERSONA
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">
+                    <i class="fa fa-user-plus mr-2"></i> AGREGAR NUEVA PERSONA
                 </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -51,11 +51,11 @@
                         </div>
                     </div>
                     <div class="form-group row align-items-center mt-4">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align text-md-right" for="celular">
-                            Celular <span class="required text-danger">*</span>
+                        <label class="col-form-label col-md-3 col-sm-3 label-align text-md-right" for="numeroCelular">
+                            Nº Celular <span class="required text-danger">*</span>
                         </label>
                         <div class="col-md-7 col-sm-7">
-                            <input type="tel" th:field="*{numeroCelular}" class="form-control" id="celular"
+                            <input type="tel" th:field="*{numeroCelular}" class="form-control" id="numeroCelular"
                                 maxlength="9" minlength="9" pattern="9[0-9]{8}"
                                 title="El número debe empezar con 9 y tener 9 dígitos" required
                                 oninput="this.value = this.value.replace(/[^0-9]/g, '')">
@@ -81,7 +81,7 @@
                     <i class="fa fa-times mr-1"></i> CANCELAR
                 </button>
                 <button type="button" class="btn btn-dark" onclick="guardarData('/personas/guardar')">
-                    <i class="fa fa-save mr-1"></i> GUARDAR
+                    <i class="fa fa-save ml-1"></i> GUARDAR
                 </button>
             </div>
         </div>

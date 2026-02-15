@@ -2,67 +2,134 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title"><i class="fa fa-paw mr-2"></i> REGISTRO MASCOTA</h5>
-                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">
+                    <i class="fa fa-paw mr-2"></i> AGREGAR NUEVA MASCOTA
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
-                <form id="formulario" class="form-horizontal form-label-left" th:object="${mascota}" autocomplete="off">
+                <form id="formulario" class="form-horizontal" th:object="${mascota}" autocomplete="off">
                     <input type="hidden" th:field="*{idMascota}">
+                    <input type="hidden" th:field="*{persona.idPersona}" id="idPersona">
+                    <div class="alert alert-secondary py-2">
+                        <b><i class="fa fa-user"></i> Datos del dueño</b>
+                    </div>
                     <div class="form-group row align-items-center">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align text-md-right" for="persona">
-                            Dueño <span class="required text-danger">*</span>
+                        <label class="col-md-3 label-align text-md-right" for="dniBusqueda">
+                            DNI <span class="text-danger">*</span>
                         </label>
-                        <div class="col-md-7 col-sm-7">
-                            <select th:field="*{persona}" id="persona" class="form-control text-capitalize" required>
-                                <option value="">-- Seleccione --</option>
-                                <option th:each="p : ${personas}" th:value="${p.idPersona}"
-                                    th:text="|${p.nombres} ${p.apellidos} - ${p.dni}|">
-                                </option>
-                            </select>
-                            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('persona')}"
-                                th:errors="*{persona}"></div>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <input type="text" th:field="*{persona.dni}" id="dniBusqueda" class="form-control"
+                                    minlength="8" maxlength="8" pattern="^(?!00)[0-9]{8}$"
+                                    title="El DNI no puede comenzar con '00' y debe tener 8 dígitos" required>
+                                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('persona.dni')}"
+                                    th:errors="*{persona.dni}"></div>
+                                <div class="input-group-append">
+                                    <button class="btn btn-info" type="button" onclick="buscarDuenio()">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center">
+                        <label class="col-md-3 label-align text-md-right" for="nombres">
+                            NOMBRES <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <input type="text" th:field="*{persona.nombres}" id="nombres"
+                                class="form-control text-capitalize" pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$"
+                                title="Solo se permiten letras y espacios" readonly required>
+                            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('persona.nombres')}"
+                                th:errors="*{persona.nombres}"></div>
                         </div>
                     </div>
                     <div class="form-group row align-items-center mt-3">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align text-md-right" for="nombre">
-                            Nombre <span class="required text-danger">*</span>
+                        <label class="col-md-3 label-align text-md-right" for="apellidos">
+                            APELLIDOS <span class="text-danger">*</span>
                         </label>
-                        <div class="col-md-7 col-sm-7">
-                            <input type="text" th:field="*{nombre}" class="form-control" id="nombre" required>
+                        <div class="col-md-7">
+                            <input type="text" th:field="*{persona.apellidos}" id="apellidos"
+                                class="form-control text-capitalize" pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$"
+                                title="Solo se permiten letras y espacios" readonly required>
+                            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('persona.apellidos')}"
+                                th:errors="*{persona.apellidos}"></div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mt-3">
+                        <label class="col-md-3 label-align text-md-right" for="numeroCelular">
+                            Nº CELULAR <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <input type="tel" th:field="*{persona.numeroCelular}" id="numeroCelular"
+                                class="form-control" maxlength="9" minlength="9" pattern="9[0-9]{8}"
+                                title="El número debe empezar con 9 y tener 9 dígitos" readonly required>
+                            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('persona.numeroCelular')}"
+                                th:errors="*{persona.numeroCelular}"></div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mt-3">
+                        <label class="col-md-3 label-align text-md-right" for="correo">
+                            CORREO <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <input type="email" th:field="*{persona.correo}" id="correo" class="form-control"
+                                title="Ingrese un correo válido" readonly required>
+                            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('persona.correo')}"
+                                th:errors="*{persona.correo}"></div>
+                        </div>
+                    </div>
+                    <div class="alert alert-secondary py-2 mt-4">
+                        <b><i class="fa fa-paw"></i> Datos de la mascota</b>
+                    </div>
+                    <div class="form-group row align-items-center mt-3">
+                        <label class="col-md-3 label-align text-md-right" for="nombre">
+                            NOMBRE <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <input type="text" th:field="*{nombre}" class="form-control text-capitalize" id="nombre"
+                                pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$" title="Solo se permiten letras y espacios" required>
                             <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('nombre')}"
                                 th:errors="*{nombre}"></div>
                         </div>
                     </div>
                     <div class="form-group row align-items-center mt-3">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align text-md-right" for="especie">
-                            Especie <span class="required text-danger">*</span>
+                        <label class="col-md-3 label-align text-md-right" for="especie">
+                            ESPECIE <span class="text-danger">*</span>
                         </label>
-                        <div class="col-md-7 col-sm-7">
-                            <input type="text" th:field="*{especie}" class="form-control" id="especie" required>
+                        <div class="col-md-7">
+                            <input type="text" th:field="*{especie}" class="form-control text-capitalize" id="especie"
+                                pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$" title="Solo se permiten letras y espacios" required>
                             <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('especie')}"
                                 th:errors="*{especie}"></div>
                         </div>
                     </div>
                     <div class="form-group row align-items-center mt-3">
                         <label class="col-form-label col-md-3 col-sm-3 label-align text-md-right" for="raza">
-                            Raza <span class="required text-danger">*</span>
+                            RAZA <span class="required text-danger">*</span>
                         </label>
                         <div class="col-md-7 col-sm-7">
-                            <input type="text" th:field="*{raza}" class="form-control" id="raza" required>
+                            <input type="text" th:field="*{raza}" class="form-control text-capitalize" id="raza"
+                                pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]+$" title="Solo se permiten letras y espacios" required>
                             <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('raza')}"
                                 th:errors="*{raza}"></div>
                         </div>
                     </div>
                     <div class="form-group row align-items-center mt-3">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align text-md-right">
-                            Género <span class="required text-danger">*</span>
+                        <label class="col-md-3 label-align text-md-right">
+                            GÉNERO <span class="text-danger">*</span>
                         </label>
-                        <div class="col-md-7 col-sm-7">
+                        <div class="col-md-7">
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-outline-info">
+                                <label class="btn btn-outline-info"
+                                    th:classappend="${mascota.genero == 'Macho'} ? 'active' : ''">
                                     <input type="radio" th:field="*{genero}" value="Macho" required> Macho
                                 </label>
-                                <label class="btn btn-outline-info">
+                                <label class="btn btn-outline-info"
+                                    th:classappend="${mascota.genero == 'Hembra'} ? 'active' : ''">
                                     <input type="radio" th:field="*{genero}" value="Hembra"> Hembra
                                 </label>
                             </div>
@@ -72,11 +139,12 @@
                     </div>
                     <div class="form-group row align-items-center mt-3">
                         <label class="col-form-label col-md-3 col-sm-3 label-align text-md-right" for="descripcion">
-                            Descripción <span class="required text-danger">*</span>
+                            DESCRIPCIÓN <span class="required text-danger">*</span>
                         </label>
                         <div class="col-md-7 col-sm-7">
                             <textarea th:field="*{descripcion}" class="form-control" id="descripcion" rows="3"
-                                maxlength="500" required></textarea>
+                                maxlength="500" title="Debe ingresar una descripción que tenga entre 3 y 500 caracteres"
+                                required></textarea>
                             <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('descripcion')}"
                                 th:errors="*{descripcion}"></div>
                         </div>
@@ -88,7 +156,7 @@
                     <i class="fa fa-times mr-1"></i> CANCELAR
                 </button>
                 <button type="button" class="btn btn-dark" onclick="guardarData('/mascotas/guardar')">
-                    <i class="fa fa-save mr-1"></i> GUARDAR
+                    <i class="fa fa-save ml-1"></i> GUARDAR
                 </button>
             </div>
         </div>

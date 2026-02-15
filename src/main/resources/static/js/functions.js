@@ -98,3 +98,30 @@ function eliminarData(url) {
         }
     });
 }
+
+function buscarDuenio() {
+    const dni = $('#dniBusqueda').val();
+    if (dni.length < 8) {
+        Swal.fire('Atención', 'Ingrese un DNI válido', 'warning');
+        return;
+    }
+    $.ajax({
+        url: `/mascotas/buscar-duenio/${dni}`,
+        type: 'GET',
+        success: function (persona) {
+            $('#idPersona').val('');
+            $('#nombres').val('').prop('readonly', false);
+            $('#apellidos').val('').prop('readonly', false);
+            $('#numeroCelular').val('').prop('readonly', false);
+            $('#correo').val('').prop('readonly', false);
+            if (persona) {
+                $('#idPersona').val(persona.idPersona);
+                $('#nombres').val(persona.nombres);
+                $('#apellidos').val(persona.apellidos);
+                $('#numeroCelular').val(persona.numeroCelular);
+                $('#correo').val(persona.correo);
+                console.log('Dueño encontrado en la base de datos');
+            }
+        }
+    });
+}

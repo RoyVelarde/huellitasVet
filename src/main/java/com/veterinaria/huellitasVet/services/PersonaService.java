@@ -12,8 +12,8 @@ public class PersonaService {
     @Autowired
     private PersonaRepository personaRepository;
 
-    public void guardar(Persona persona) {
-        personaRepository.save(persona);
+    public Persona guardar(Persona persona) {
+        return personaRepository.save(persona);
     }
 
     public void eliminar(Integer id) {
@@ -26,6 +26,10 @@ public class PersonaService {
 
     public Persona buscarPorId(Integer id) {
         return personaRepository.findById(id).orElse(null);
+    }
+
+    public Persona buscarPorDni(String dni) {
+        return personaRepository.findByDni(dni).orElse(null);
     }
 
 }
