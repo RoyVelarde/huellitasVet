@@ -3,6 +3,9 @@ package com.veterinaria.huellitasVet.models;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
@@ -47,6 +50,7 @@ public class Mascota {
 
     @Valid
     @ManyToOne
+    @JsonIgnoreProperties("mascotas")
     @JoinColumn(name = "persona_id", nullable = false)
     @NotNull(message = "Debes asignar un dueño a la mascota")
     private Persona persona;

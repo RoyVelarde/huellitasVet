@@ -8,48 +8,49 @@
 
 <body>
     <th:block layout:fragment="panel_title">
-        <h2>Gestionar Personas</h2>
+        <h2>Gestionar Usuarios</h2>
     </th:block>
     <div layout:fragment="content" class="mb-5">
         <div class="mt-4 mb-4">
-            <button type="button" class="btn btn-dark btn-lg" onclick="abrirModal('/personas/agregar')">
-                <i class="fa fa-plus-circle mr-2"></i> NUEVA PERSONA
+            <button type="button" class="btn btn-dark btn-lg" onclick="abrirModal('/usuarios/agregar')">
+                <i class="fa fa-plus-circle mr-2"></i> NUEVO USUARIO
             </button>
         </div>
-        <div th:if="${#lists.isEmpty(personas)}" class="alert alert-primary alert-dismissible fade show" role="alert">
-            No se encontraron registros de personas en la base de datos.
+        <div th:if="${#lists.isEmpty(usuarios)}" class="alert alert-primary alert-dismissible fade show" role="alert">
+            No se encontraron registros de usuarios en la base de datos.
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div th:unless="${#lists.isEmpty(personas)}" class="table-responsive">
+        <div th:unless="${#lists.isEmpty(usuarios)}" class="table-responsive">
             <table class="table jambo_table table-bordered">
                 <thead>
                     <tr>
                         <th class="text-center">ID</th>
-                        <th class="text-center">NOMBRES</th>
-                        <th class="text-center">APELLIDOS</th>
+                        <th class="text-center">APELLIDOS Y NOMBRES</th>
                         <th class="text-center">DNI</th>
+                        <th class="text-center">ROL</th>
                         <th class="text-center">Nº CELULAR</th>
                         <th class="text-center">CORREO ELECTRÓNICO</th>
                         <th class="text-center">ACCIONES</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="persona : ${personas}">
-                        <td th:text="${persona.idPersona}" class="align-middle text-center"></td>
-                        <td th:text="${persona.nombres}" class="align-middle text-capitalize"></td>
-                        <td th:text="${persona.apellidos}" class="align-middle text-capitalize"></td>
-                        <td th:text="${persona.dni}" class="align-middle text-center"></td>
-                        <td th:text="${persona.numeroCelular}" class="align-middle text-center"></td>
-                        <td th:text="${persona.correo}" class="align-middle text-center"></td>
+                    <tr th:each="usuario : ${usuarios}">
+                        <td th:text="${usuario.idPersona}" class="align-middle text-center"></td>
+                        <td th:text="|${usuario.apellidos}, ${usuario.nombres}|" class="align-middle text-capitalize">
+                        </td>
+                        <td th:text="${usuario.dni}" class="align-middle text-center"></td>
+                        <td th:text="${usuario.rol}" class="align-middle text-capitalize"></td>
+                        <td th:text="${usuario.numeroCelular}" class="align-middle text-center"></td>
+                        <td th:text="${usuario.correo}" class="align-middle"></td>
                         <td class="align-middle text-center">
                             <a href="javascript:void(0)" class="text-info mr-2"
-                                th:onclick="|abrirModal('/personas/editar/${persona.idPersona}')|" title="Editar">
+                                th:onclick="|abrirModal('/usuarios/editar/${usuario.idPersona}')|" title="Editar">
                                 <i class="fa fa-pencil fa-lg"></i>
                             </a>
                             <a href="javascript:void(0)" class="text-danger ml-2"
-                                th:onclick="|eliminarData('/personas/eliminar/${persona.idPersona}')|" title="Eliminar">
+                                th:onclick="|eliminarData('/usuarios/eliminar/${usuario.idPersona}')|" title="Eliminar">
                                 <i class="fa fa-trash-o fa-lg"></i>
                             </a>
                         </td>

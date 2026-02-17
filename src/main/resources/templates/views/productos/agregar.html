@@ -1,0 +1,74 @@
+<div th:fragment="modalFormulario" class="modal fade" id="modalFormulario" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">
+                    <i class="fa fa-tags mr-2"></i> AGREGAR NUEVO PRODUCTO
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario" class="form-horizontal" th:object="${producto}" autocomplete="off">
+                    <input type="hidden" th:field="*{idProducto}" id="idProducto">
+                    <div class="form-group row align-items-center">
+                        <label class="col-md-3 label-align text-md-right" for="denominacion">
+                            DENOMINACIÓN <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <input type="text" th:field="*{denominacion}" id="denominacion" maxlength="45" minlength="2"
+                                th:classappend="${#fields.hasErrors('denominacion')} ? 'is-invalid' : ''"
+                                class="form-control text-capitalize" required
+                                title="Ingrese la denominación del producto, entre 2 y 45 caracteres">
+                            <div class="invalid-feedback" th:errors="*{denominacion}"></div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center">
+                        <label class="col-md-3 label-align text-md-right" for="marca">
+                            MARCA <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <input type="text" th:field="*{marca}" id="marca" maxlength="45" minlength="2"
+                                th:classappend="${#fields.hasErrors('marca')} ? 'is-invalid' : ''"
+                                class="form-control text-capitalize" required
+                                title="Ingrese la marca del producto, entre 2 y 45 caracteres">
+                            <div class="invalid-feedback" th:errors="*{marca}"></div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center">
+                        <label class="col-md-3 label-align text-md-right" for="precio">
+                            PRECIO <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <input type="number" step="0.01" th:field="*{precio}" id="precio"
+                                th:classappend="${#fields.hasErrors('precio')} ? 'is-invalid' : ''" class="form-control"
+                                required
+                                title="Ingrese el precio del producto, debe ser un número positivo con máximo de dos decimales">
+                            <div class="invalid-feedback" th:errors="*{precio}"></div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center">
+                        <label class="col-md-3 label-align text-md-right" for="stock">
+                            STOCK <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <input type="number" min="1" step="1" th:field="*{stock}" id="stock" class="form-control"
+                                th:classappend="${#fields.hasErrors('stock')} ? 'is-invalid' : ''" required
+                                title="Ingrese el stock del producto, debe ser un número entero mayor a cero">
+                            <div class="invalid-feedback" th:errors="*{stock}"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                    <i class="fa fa-times mr-1"></i> CANCELAR
+                </button>
+                <button type="button" class="btn btn-dark btn-guardar" onclick="guardarData('/productos/guardar')">
+                    <i class="fa fa-save ml-1"></i> GUARDAR
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

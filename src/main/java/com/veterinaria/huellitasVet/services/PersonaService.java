@@ -1,6 +1,7 @@
 package com.veterinaria.huellitasVet.services;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.veterinaria.huellitasVet.repositories.PersonaRepository;
@@ -28,8 +29,15 @@ public class PersonaService {
         return personaRepository.findById(id).orElse(null);
     }
 
-    public Persona buscarPorDni(String dni) {
-        return personaRepository.findByDni(dni).orElse(null);
+    public Optional<Persona> buscarPorDni(String dni) {
+        return personaRepository.findByDni(dni);
     }
 
+    public Optional<Persona> buscarPorCorreo(String correo) {
+        return personaRepository.findByCorreo(correo);
+    }
+
+    public Optional<Persona> buscarPorCelular(String numeroCelular) {
+        return personaRepository.findByNumeroCelular(numeroCelular);
+    }
 }

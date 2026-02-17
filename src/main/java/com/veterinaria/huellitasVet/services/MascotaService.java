@@ -1,6 +1,7 @@
 package com.veterinaria.huellitasVet.services;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.veterinaria.huellitasVet.repositories.MascotaRepository;
@@ -17,18 +18,19 @@ public class MascotaService {
     private PersonaService personaService;
 
     public void guardar(Mascota mascota) {
-        Persona persona = mascota.getPersona();
-        Persona existePersona = personaService.buscarPorDni(persona.getDni());
-        if (existePersona != null) {
-            mascota.setPersona(existePersona);
+        Persona personaFormulario = mascota.getPersona();
+        Optional<Persona> personaOptional = personaService.buscarPorDni(personaFormulario.getDni());
+        if (personaOptional.isPresent()) {
+            Persona personaExistente = personaOptional.get();
+            personaExistente.setNombres(personaFormulario.getNombres());
+            personaExistente.setApellidos(personaFormulario.getApellidos());
+            personaExistente.setNumeroCelular(personaFormulario.getNumeroCelular());
+            personaExistente.setCorreo(personaFormulario.getCorreo());
+            mascota.setPersona(personaExistente);
         } else {
-            persona = personaService.guardar(persona);
-            mascota.setPersona(persona);
+            Persona nuevaPersona = personaService.guardar(personaFormulario);
+            mascota.setPersona(nuevaPersona);
         }
-        mascotaRepository.save(mascota);
-    }
-
-    public void nuevo(Mascota mascota) {
         mascotaRepository.save(mascota);
     }
 

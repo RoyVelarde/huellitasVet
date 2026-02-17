@@ -2,97 +2,147 @@ const SwalControl = Swal.mixin({
     allowOutsideClick: false,
     allowEscapeKey: false,
     confirmButtonColor: '#26B99A',
-    cancelButtonColor: '#d33'
+    cancelButtonColor: '#d33',
+    reverseButtons: true
 });
 
+function validacionDinamica() {
+    var formulario = document.getElementById('formulario');
+    if (!formulario) return;
+    var elementos = formulario.querySelectorAll('input[title], select[title], textarea[title]');
+    for (var i = 0; i < elementos.length; i++) {
+        var elemento = elementos[i];
+        elemento.oninvalid = function (e) {
+            var target = e.target;
+            target.setCustomValidity("");
+            if (!target.validity.valid) {
+                target.setCustomValidity(target.title);
+                $(target).addClass('is-invalid');
+            }
+        };
+        elemento.oninput = function (e) {
+            var target = e.target;
+            target.setCustomValidity("");
+            if ($(target).hasClass('is-invalid')) {
+                $(target).removeClass('is-invalid');
+            }
+        };
+    }
+}
+
 function abrirModal(url) {
+    $('body').css('cursor', 'wait');
     $.ajax({
         url: url,
         type: 'GET',
+        cache: false,
         success: function (res) {
-            $('#modalContainer').html(res);
-            $('#modalFormulario').modal({
-                backdrop: 'static',
-                keyboard: false,
-                show: true
-            });
+            var container = $('#modalContainer');
+            container.empty().html(res);
+            var modalElement = $('#modalFormulario');
+            if (modalElement.length > 0) {
+                modalElement.modal({
+                    backdrop: 'static',
+                    keyboard: false,
+                    show: true
+                });
+                validacionDinamica();
+                modalElement.on('shown.bs.modal', function () {
+                    $(this).find('input:visible:first').focus();
+                });
+            }
         },
-        error: function () {
-            Swal.fire('ERROR', 'No se pudo cargar el formulario', 'error');
+        error: function (xhr, textStatus) {
+            error_message(xhr, textStatus);
+        },
+        complete: function () {
+            $('body').css('cursor', 'default');
         }
     });
 }
 
 function guardarData(url) {
-    const form = $('#formulario');
-    if (form[0].checkValidity()) {
+    var formulario = document.getElementById('formulario');
+    if (!formulario) return;
+    if (formulario.reportValidity()) {
+        var btnGuardar = $(formulario).closest('.modal-content').find('.btn-guardar');
+        var originalHtml = btnGuardar.html();
+        btnGuardar.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Guardando...');
         $.ajax({
             url: url,
             type: 'POST',
-            data: form.serialize(),
+            data: new FormData(formulario),
+            processData: false,
+            contentType: false,
             success: function (res) {
-                $('#modalFormulario').modal('hide');
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡ÉXITO!',
-                    text: res,
-                    timer: 1500,
-                    showConfirmButton: false
-                }).then(() => {
-                    location.reload();
-                });
+                if (res === "ok") {
+                    $('#modalFormulario').modal('hide');
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡ÉXITO!',
+                        text: 'Datos guardados correctamente',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(function () {
+                        location.reload();
+                    });
+                } else {
+                    $('#modalFormulario').modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                    $("#modalContainer").html(res);
+                    validacionDinamica();
+                    $('#modalFormulario').modal({
+                        backdrop: 'static',
+                        keyboard: false,
+                        show: true
+                    });
+                }
             },
-            error: function (xhr) {
-                const errorMsg = xhr.responseText ? xhr.responseText : 'Error';
-                Swal.fire({
-                    title: '¡ADVERTENCIA!',
-                    text: errorMsg,
-                    icon: 'error',
-                    confirmButtonColor: '#26B99A'
-                });
+            error: function (jqXHR, textStatus) {
+                error_message(jqXHR, textStatus);
+            },
+            complete: function () {
+                btnGuardar.prop('disabled', false).html(originalHtml);
             }
         });
-    } else {
-        form[0].reportValidity();
     }
 }
 
 function eliminarData(url) {
-    Swal.fire({
-        title: '¿ESTÁ SEGURO DE ELIMINAR?',
-        text: "Esta acción no se puede deshacer.",
+    SwalControl.fire({
+        title: '¿Estás seguro?',
+        text: "¡Esta acción eliminará el registro permanentemente!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#26B99A',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sí, eliminar',
+        confirmButtonText: '<i class="fa fa-trash"></i> Sí, eliminar',
         cancelButtonText: 'Cancelar',
-        reverseButtons: true,
-        allowOutsideClick: false
-    }).then((result) => {
+    }).then(function (result) {
         if (result.isConfirmed) {
             $.ajax({
                 url: url,
                 type: 'POST',
                 success: function (res) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡ELIMINADO!',
-                        text: 'El registro ha sido borrado correctamente.',
-                        timer: 1500,
-                        showConfirmButton: false
-                    }).then(() => {
-                        location.reload();
-                    });
+                    if (res === "ok") {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Completado!',
+                            text: 'El registro ha sido eliminado con éxito.',
+                            timer: 1500,
+                            showConfirmButton: false,
+                        }).then(function () {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: res,
+                            icon: 'error',
+                        });
+                    }
                 },
-                error: function (xhr) {
-                    const errorMsg = xhr.responseText ? xhr.responseText : 'No se pudo eliminar el registro';
-                    Swal.fire({
-                        title: '¡ADVERTENCIA!',
-                        text: errorMsg,
-                        icon: 'error',
-                        confirmButtonColor: '#26B99A'
-                    });
+                error: function (jqXHR, textStatus) {
+                    error_message(jqXHR, textStatus);
                 }
             });
         }
@@ -100,28 +150,80 @@ function eliminarData(url) {
 }
 
 function buscarDuenio() {
-    const dni = $('#dniBusqueda').val();
-    if (dni.length < 8) {
-        Swal.fire('Atención', 'Ingrese un DNI válido', 'warning');
+    var dni = $('#dniBusqueda').val().trim();
+    if (dni.length !== 8 || isNaN(dni)) {
+        Swal.fire('Atención', 'Ingrese un DNI válido (8 dígitos numéricos)', 'warning');
+        $('#dniBusqueda').focus();
         return;
     }
+    var btnBusqueda = $('.btn-busqueda');
+    var originalHtml = btnBusqueda.html();
+    btnBusqueda.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
+    $('#rol').val("Dueño");
+    $('#idPersona').val("");
+    $('#nombres').val("");
+    $('#apellidos').val("");
+    $('#numeroCelular').val("");
+    $('#correo').val("");
     $.ajax({
-        url: `/mascotas/buscar-duenio/${dni}`,
+        url: '/mascotas/buscar-duenio/' + dni,
         type: 'GET',
+        dataType: 'json',
         success: function (persona) {
-            $('#idPersona').val('');
-            $('#nombres').val('').prop('readonly', false);
-            $('#apellidos').val('').prop('readonly', false);
-            $('#numeroCelular').val('').prop('readonly', false);
-            $('#correo').val('').prop('readonly', false);
             if (persona) {
                 $('#idPersona').val(persona.idPersona);
                 $('#nombres').val(persona.nombres);
                 $('#apellidos').val(persona.apellidos);
                 $('#numeroCelular').val(persona.numeroCelular);
                 $('#correo').val(persona.correo);
-                console.log('Dueño encontrado en la base de datos');
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Dueño encontrado',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
             }
+        },
+        error: function (jqXHR, textStatus) {
+            if (jqXHR.status === 404) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'info',
+                    title: 'DNI no registrado, ingrese datos',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            } else {
+                error_message(jqXHR, textStatus);
+            }
+        },
+        complete: function () {
+            btnBusqueda.prop('disabled', false).html(originalHtml);
         }
+    });
+}
+
+function error_message(jqXHR, textStatus) {
+    var errorMessage = "";
+    if (jqXHR.status === 0) {
+        errorMessage = "Sin conexión. Verifique su red.";
+    } else if (jqXHR.status === 404) {
+        errorMessage = "El recurso no fue encontrado [404].";
+    } else if (jqXHR.status === 403) {
+        errorMessage = "Acceso denegado [403].";
+    } else if (jqXHR.status === 500) {
+        errorMessage = "Error interno en el servidor [500].";
+    } else if (textStatus === "timeout") {
+        errorMessage = "Tiempo de espera agotado.";
+    } else {
+        errorMessage = jqXHR.responseText || ("Error: " + textStatus);
+    }
+    Swal.fire({
+        title: "¡ATENCIÓN!",
+        text: errorMessage,
+        icon: "error",
     });
 }

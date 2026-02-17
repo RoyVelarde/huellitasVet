@@ -1,17 +1,21 @@
 package com.veterinaria.huellitasVet.models;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.ArrayList;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import java.util.List;
 
 @Entity
 @Table(name = "tbl_persona")
@@ -38,6 +42,10 @@ public class Persona {
     @Column(length = 8, nullable = false, unique = true)
     private String dni;
 
+    @NotBlank(message = "El rol es obligatorio")
+    @Column(length = 25, nullable = false)
+    private String rol;
+
     @NotBlank(message = "El celular es obligatorio")
     @Size(min = 9, max = 9, message = "El celular debe tener 9 dígitos")
     @Digits(integer = 9, fraction = 0, message = "El número de celular solo debe contener números")
@@ -46,11 +54,12 @@ public class Persona {
 
     @NotBlank(message = "El correo es obligatorio")
     @Email(message = "Formato de correo inválido")
-    @Column(length = 100, nullable = true, unique = true)
+    @Column(length = 100, nullable = false, unique = true)
     private String correo;
 
+    @JsonIgnoreProperties("persona")
     @OneToMany(mappedBy = "persona")
-    private List<Mascota> mascotas;
+    private List<Mascota> mascotas = new ArrayList<>();
 
     public Persona() {
     }
@@ -87,6 +96,14 @@ public class Persona {
         this.dni = dni;
     }
 
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
     public String getNumeroCelular() {
         return numeroCelular;
     }
@@ -101,6 +118,14 @@ public class Persona {
 
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    public List<Mascota> getMascotas() {
+        return mascotas;
+    }
+
+    public void setMascotas(List<Mascota> mascotas) {
+        this.mascotas = mascotas;
     }
 
 }

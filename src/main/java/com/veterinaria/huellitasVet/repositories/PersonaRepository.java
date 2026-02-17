@@ -1,7 +1,7 @@
 package com.veterinaria.huellitasVet.repositories;
 
-import org.springframework.stereotype.Repository;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.veterinaria.huellitasVet.models.Persona;
 
@@ -9,5 +9,9 @@ import com.veterinaria.huellitasVet.models.Persona;
 public interface PersonaRepository extends JpaRepository<Persona, Integer> {
 
     Optional<Persona> findByDni(String dni);
+
+    Optional<Persona> findByCorreo(String correo);
+
+    Optional<Persona> findByNumeroCelular(String numeroCelular);
 
 }
