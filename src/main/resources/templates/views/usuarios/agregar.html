@@ -19,8 +19,10 @@
                         </label>
                         <div class="col-md-7">
                             <input type="text" th:field="*{dni}" class="form-control" id="dni" maxlength="8"
-                                minlength="8" th:classappend="${#fields.hasErrors('dni')} ? 'is-invalid' : ''" required
-                                title="Ingrese el número de DNI del usuario, no puede comenzar con '00' y debe tener 8 dígitos">
+                                minlength="8" th:classappend="${#fields.hasErrors('dni')} ? 'is-invalid' : ''"
+                                pattern="^(?!00)[0-9]{8}$" required
+                                title="Ingrese el número de DNI del usuario, no puede comenzar con '00' y debe tener 8 dígitos"
+                                onkeypress="return (event.charCode >= 48 && event.charCode <= 57) && (this.value.length < 8) && !(this.value === '0' && event.key === '0')">
                             <div class="invalid-feedback" th:errors="*{dni}"></div>
                         </div>
                     </div>
@@ -31,7 +33,9 @@
                         <div class="col-md-7">
                             <input type="text" th:field="*{nombres}" class="form-control" id="nombres" maxlength="40"
                                 minlength="2" th:classappend="${#fields.hasErrors('nombres')} ? 'is-invalid' : ''"
-                                required title="Ingrese los nombres del usuario, entre 2 y 40 caracteres">
+                                required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"
+                                title="Ingrese los nombres del usuario, entre 2 y 40 letras"
+                                onkeypress="return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/.test(event.key)">
                             <div class="invalid-feedback" th:errors="*{nombres}"></div>
                         </div>
                     </div>
@@ -41,9 +45,10 @@
                         </label>
                         <div class="col-md-7">
                             <input type="text" th:field="*{apellidos}" class="form-control" id="apellidos"
-                                maxlength="75" minlength="2" required
+                                maxlength="75" minlength="2" required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"
                                 th:classappend="${#fields.hasErrors('apellidos')} ? 'is-invalid' : ''"
-                                title="Ingrese los apellidos del usuario, entre 2 y 75 caracteres">
+                                title="Ingrese los apellidos del usuario, entre 2 y 75 letras"
+                                onkeypress="return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/.test(event.key)">
                             <div class="invalid-feedback" th:errors="*{apellidos}"></div>
                         </div>
                     </div>
@@ -68,11 +73,11 @@
                             Nº CELULAR <span class="required text-danger">*</span>
                         </label>
                         <div class="col-md-7">
-                            <input type="number" th:field="*{numeroCelular}" class="form-control" id="numeroCelular"
-                                maxlength="9" minlength="9"
+                            <input type="text" th:field="*{numeroCelular}" class="form-control" id="numeroCelular"
+                                maxlength="9" minlength="9" pattern="^9[0-9]{8}$" required
                                 th:classappend="${#fields.hasErrors('numeroCelular')} ? 'is-invalid' : ''"
                                 title="Ingrese el número de celular del usuario, debe empezar con el número 9 y tener 9 dígitos"
-                                required>
+                                onkeypress="return (event.charCode >= 48 && event.charCode <= 57) && (this.value.length < 9) && (this.value.length === 0 ? event.key === '9' : true)">
                             <div class="invalid-feedback" th:errors="*{numeroCelular}"></div>
                         </div>
                     </div>
@@ -82,19 +87,21 @@
                         </label>
                         <div class="col-md-7 col-sm-7">
                             <input type="email" th:field="*{correo}" class="form-control" id="correo" maxlength="100"
-                                minlength="9" required
+                                minlength="9" required title="Ingrese un correo válido"
+                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                                 th:classappend="${#fields.hasErrors('correo')} ? 'is-invalid' : ''"
-                                title="Ingrese un correo válido">
+                                onkeypress="return /^[a-zA-Z0-9@._-]$/.test(event.key)">
                             <div class="invalid-feedback" th:errors="*{correo}"></div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer bg-light">
-                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">
                     <i class="fa fa-times mr-1"></i> CANCELAR
                 </button>
-                <button type="button" class="btn btn-dark btn-guardar" onclick="guardarData('/usuarios/guardar')">
+                <button type="button" class="btn btn-success btn-guardar border border-dark"
+                    onclick="guardarData('/usuarios/guardar')">
                     <i class="fa fa-save ml-1"></i> GUARDAR
                 </button>
             </div>

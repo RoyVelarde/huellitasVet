@@ -1,9 +1,12 @@
 const SwalControl = Swal.mixin({
     allowOutsideClick: false,
     allowEscapeKey: false,
-    confirmButtonColor: '#26B99A',
-    cancelButtonColor: '#d33',
-    reverseButtons: true
+    reverseButtons: true,
+    buttonsStyling: false,
+    customClass: {
+        confirmButton: 'btn btn-success border border-dark',
+        cancelButton: 'btn btn-outline-danger'
+    }
 });
 
 function validacionDinamica() {
@@ -182,7 +185,7 @@ function buscarDuenio() {
                     icon: 'success',
                     title: 'Dueño encontrado',
                     showConfirmButton: false,
-                    timer: 2000
+                    timer: 3000
                 });
             }
         },

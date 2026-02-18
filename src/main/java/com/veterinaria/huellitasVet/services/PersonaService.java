@@ -2,10 +2,12 @@ package com.veterinaria.huellitasVet.services;
 
 import java.util.List;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import com.veterinaria.huellitasVet.repositories.PersonaRepository;
+import org.springframework.stereotype.Service;
+
 import com.veterinaria.huellitasVet.models.Persona;
+import com.veterinaria.huellitasVet.repositories.PersonaRepository;
 
 @Service
 public class PersonaService {
