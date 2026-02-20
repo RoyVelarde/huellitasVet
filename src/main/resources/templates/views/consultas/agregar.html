@@ -1,0 +1,104 @@
+<div th:fragment="modalFormulario" class="modal fade" id="modalFormulario" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">
+                    <i class="fa fa-stethoscope mr-2"></i>
+                    <span
+                        th:text="${consulta.idConsulta == null} ? 'AGREGAR NUEVA CONSULTA' : 'MODIFICAR DATOS DE LA CONSULTA'"></span>
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario" class="form-horizontal" th:object="${consulta}" autocomplete="off">
+                    <input type="hidden" th:field="*{idConsulta}" id="idConsulta">
+                    <input type="hidden" th:field="*{fecha}" id="fecha">
+                    <div class="form-group row align-items-center">
+                        <label class="col-md-3 label-align text-md-right" for="dniBusqueda">
+                            DNI Dueño <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <div class="input-group">
+                                <input type="text" id="dniBusqueda" th:value="${dniDuenio}" class="form-control"
+                                    minlength="8" maxlength="8" pattern="^(?!00)[0-9]{8}$" required
+                                    title="Ingrese el número de DNI del dueño, no puede comenzar con '00' y debe tener 8 dígitos"
+                                    onkeypress="return (event.charCode >= 48 && event.charCode <= 57) && (this.value.length < 8) && !(this.value === '0' && event.key === '0')">
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary btn-busqueda" type="button"
+                                        onclick="buscarMascotasDuenio()">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center">
+                        <label class="col-md-3 label-align text-md-right" for="comboMascota">
+                            Mascota <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <select th:field="*{mascota}" id="comboMascota" class="form-control text-capitalize"
+                                required th:classappend="${#fields.hasErrors('mascota')} ? 'is-invalid' : ''"
+                                title="Seleccione una mascota">
+                                <option value="">-- Seleccione --</option>
+                                <option th:each="mascota : ${mascotas}" th:value="${mascota.idMascota}"
+                                    th:text="|${mascota.nombre} (${mascota.especie})|"
+                                    th:selected="${consulta.mascota != null && mascota.idMascota == consulta.mascota.idMascota}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:errors="*{mascota}"></div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center">
+                        <label class="col-md-3 label-align text-md-right" for="motivo">
+                            Motivo <span class="required text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <textarea th:field="*{motivo}" class="form-control" id="motivo" rows="3" maxlength="200"
+                                minlength="3" required
+                                th:classappend="${#fields.hasErrors('motivo')} ? 'is-invalid' : ''"
+                                title="Ingrese rl motivo de la consulta, entre 3 y 200 caracteres"></textarea>
+                            <div class="invalid-feedback" th:errors="*{motivo}"></div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center">
+                        <label class="col-md-3 label-align text-md-right" for="diagnostico">
+                            Diagnóstico <span class="required text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <textarea th:field="*{diagnostico}" class="form-control" id="diagnostico" rows="3"
+                                minlength="3" required
+                                th:classappend="${#fields.hasErrors('diagnostico')} ? 'is-invalid' : ''"
+                                title="Ingrese el diagnostico"></textarea>
+                            <div class="invalid-feedback" th:errors="*{diagnostico}"></div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center">
+                        <label class="col-md-3 label-align text-md-right" for="tratamiento">
+                            Tratamiento <span class="required text-danger">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            <textarea th:field="*{tratamiento}" class="form-control" id="tratamiento" rows="3"
+                                minlength="3" required
+                                th:classappend="${#fields.hasErrors('tratamiento')} ? 'is-invalid' : ''"
+                                title="Ingrese el tratamiento"></textarea>
+                            <div class="invalid-feedback" th:errors="*{tratamiento}"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">
+                    <i class="fa fa-times mr-1"></i> CANCELAR
+                </button>
+                <button type="button" class="btn btn-success btn-guardar border border-dark"
+                    onclick="guardarData('/consultas/guardar')">
+                    <i class="fa fa-save ml-1"></i>
+                    <span th:text="${consulta.idConsulta == null} ? ' GUARDAR' : ' ACTUALIZAR'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

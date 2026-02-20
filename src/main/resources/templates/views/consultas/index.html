@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/gentelella}">
+
+<head>
+    <title>Inicio - Huellitas Vet</title>
+</head>
+
+<body>
+    <th:block layout:fragment="panel_title">
+        <h2>Gestionar Consultas Médicas</h2>
+    </th:block>
+    <div layout:fragment="content" class="mb-5">
+        <div class="mt-4 mb-4">
+            <button type="button" class="btn btn-dark btn-lg" onclick="abrirModal('/consultas/agregar')">
+                <i class="fa fa-plus-circle mr-2"></i> NUEVA CONSULTA MÉDICA
+            </button>
+        </div>
+        <div th:if="${#lists.isEmpty(consultas)}" class="alert alert-primary alert-dismissible fade show" role="alert">
+            No se encontraron registros de consultas médicas en la base de datos.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div th:unless="${#lists.isEmpty(consultas)}" class="table-responsive">
+            <table class="table jambo_table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th class="text-center">DUEÑO</th>
+                        <th class="text-center">NOMBRE DE MASCOTA</th>
+                        <th class="text-center">MOTIVO</th>
+                        <th class="text-center">DIAGNÓSTICO</th>
+                        <th class="text-center">ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="consulta : ${consultas}">
+                        <td th:text="${consulta.idConsulta}" class="align-middle text-center"></td>
+                        <td th:text="|${consulta.mascota.persona.nombres} ${consulta.mascota.persona.apellidos}|"
+                            class="align-middle text-capitalize"></td>
+                        <td th:text="|${consulta.mascota.raza} ${consulta.mascota.nombre}|"
+                            class="align-middle text-capitalize"></td>
+                        <td th:text="${consulta.motivo}" class="align-middle text-capitalize"></td>
+                        <td th:text="${consulta.diagnostico}" class="align-middle text-capitalize"></td>
+                        <td class="align-middle text-center">
+                            <a href="javascript:void(0)" class="text-info mr-2"
+                                th:onclick="|abrirModal('/consultas/editar/${consulta.idConsulta}')|" title="Editar">
+                                <i class="fa fa-pencil fa-lg"></i>
+                            </a>
+                            <a href="javascript:void(0)" class="text-danger ml-2"
+                                th:onclick="|eliminarData('/consultas/eliminar/${consulta.idConsulta}')|"
+                                title="Eliminar">
+                                <i class="fa fa-trash-o fa-lg"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

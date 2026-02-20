@@ -3,7 +3,9 @@
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title">
-                    <i class="fa fa-tags mr-2"></i> AGREGAR NUEVO PRODUCTO
+                    <i class="fa fa-tags mr-2"></i>
+                    <span
+                        th:text="${producto.idProducto == null} ? 'AGREGAR NUEVO PRODUCTO' : 'MODIFICAR DATOS DEL PRODUCTO'"></span>
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -20,8 +22,7 @@
                             <input type="text" th:field="*{denominacion}" id="denominacion" maxlength="45" minlength="2"
                                 th:classappend="${#fields.hasErrors('denominacion')} ? 'is-invalid' : ''"
                                 class="form-control text-capitalize" required
-                                title="Ingrese la denominación del producto, entre 2 y 45 caracteres"
-                                onkeypress="return /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$/.test(event.key)">
+                                title="Ingrese la denominación del producto, entre 2 y 45 caracteres">
                             <div class="invalid-feedback" th:errors="*{denominacion}"></div>
                         </div>
                     </div>
@@ -33,8 +34,7 @@
                             <input type="text" th:field="*{marca}" id="marca" maxlength="45" minlength="2"
                                 th:classappend="${#fields.hasErrors('marca')} ? 'is-invalid' : ''"
                                 class="form-control text-capitalize" required
-                                title="Ingrese la marca del producto, entre 2 y 45 caracteres"
-                                onkeypress="return /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$/.test(event.key)">
+                                title="Ingrese la marca del producto, entre 2 y 45 caracteres">
                             <div class="invalid-feedback" th:errors="*{marca}"></div>
                         </div>
                     </div>
@@ -46,8 +46,7 @@
                             <input type="text" th:field="*{precio}" id="precio" required
                                 th:classappend="${#fields.hasErrors('precio')} ? 'is-invalid' : ''"
                                 pattern="^\d+(\.\d{1,2})?$" class="form-control"
-                                title="Ingrese el precio del producto, debe ser un número positivo con máximo de dos decimales"
-                                onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || (event.charCode === 46 && !this.value.includes('.'))">
+                                title="Ingrese el precio del producto, debe ser un número positivo con máximo de dos decimales">
                             <div class="invalid-feedback" th:errors="*{precio}"></div>
                         </div>
                     </div>
@@ -59,8 +58,7 @@
                             <input type="text" th:field="*{stock}" id="stock" class="form-control"
                                 th:classappend="${#fields.hasErrors('stock')} ? 'is-invalid' : ''" required
                                 title="Ingrese el stock del producto, debe ser un número entero mayor a cero"
-                                pattern="^[1-9][0-9]*$"
-                                onkeypress="return (event.charCode >= 48 && event.charCode <= 57)">
+                                pattern="^[1-9][0-9]*$">
                             <div class="invalid-feedback" th:errors="*{stock}"></div>
                         </div>
                     </div>
@@ -72,7 +70,8 @@
                 </button>
                 <button type="button" class="btn btn-success btn-guardar border border-dark"
                     onclick="guardarData('/productos/guardar')">
-                    <i class="fa fa-save ml-1"></i> GUARDAR
+                    <i class="fa fa-save ml-1"></i>
+                    <span th:text="${producto.idProducto == null} ? ' GUARDAR' : ' ACTUALIZAR'"></span>
                 </button>
             </div>
         </div>

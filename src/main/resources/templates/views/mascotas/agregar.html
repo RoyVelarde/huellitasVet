@@ -3,7 +3,9 @@
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title">
-                    <i class="fa fa-paw mr-2"></i> AGREGAR NUEVA MASCOTA
+                    <i class="fa fa-paw mr-2"></i>
+                    <span
+                        th:text="${mascota.idMascota == null} ? 'AGREGAR NUEVA MASCOTA' : 'MODIFICAR DATOS DE LA MASCOTA'"></span>
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -26,8 +28,7 @@
                                 <input type="text" th:field="*{persona.dni}" id="dniBusqueda" class="form-control"
                                     minlength="8" maxlength="8" pattern="^(?!00)[0-9]{8}$" required
                                     th:classappend="${#fields.hasErrors('persona.dni')} ? 'is-invalid' : ''"
-                                    title="Ingrese el número de DNI del dueño, no puede comenzar con '00' y debe tener 8 dígitos"
-                                    onkeypress="return (event.charCode >= 48 && event.charCode <= 57) && (this.value.length < 8) && !(this.value === '0' && event.key === '0')">
+                                    title="Ingrese el número de DNI del dueño, no puede comenzar con '00' y debe tener 8 dígitos">
                                 <div class="invalid-feedback" th:errors="*{persona.dni}"></div>
                                 <div class="input-group-append">
                                     <button class="btn btn-secondary btn-busqueda" type="button"
@@ -47,8 +48,7 @@
                                 class="form-control text-capitalize" maxlength="40" minlength="2"
                                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"
                                 th:classappend="${#fields.hasErrors('persona.nombres')} ? 'is-invalid' : ''"
-                                title="Ingrese los nombres del dueño, entre 2 y 40 letras" required
-                                onkeypress="return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/.test(event.key)">
+                                title="Ingrese los nombres del dueño, entre 2 y 40 letras" required>
                             <div class="invalid-feedback" th:errors="*{persona.nombres}"></div>
                         </div>
                     </div>
@@ -60,8 +60,7 @@
                             <input type="text" th:field="*{persona.apellidos}" id="apellidos" maxlength="75"
                                 minlength="2" class="form-control text-capitalize" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"
                                 th:classappend="${#fields.hasErrors('persona.apellidos')} ? 'is-invalid' : ''"
-                                title="Ingresa los apellidos del dueño, entre 2 y 75 letras" required
-                                onkeypress="return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/.test(event.key)">
+                                title="Ingresa los apellidos del dueño, entre 2 y 75 letras" required>
                             <div class="invalid-feedback" th:errors="*{persona.apellidos}"></div>
                         </div>
                     </div>
@@ -73,8 +72,7 @@
                             <input type="text" th:field="*{persona.numeroCelular}" id="numeroCelular" required
                                 class="form-control" maxlength="9" minlength="9" pattern="^9[0-9]{8}$"
                                 th:classappend="${#fields.hasErrors('persona.numeroCelular')} ? 'is-invalid' : ''"
-                                title="Ingrese el número de celular del dueño, debe empezar con 9 y tener 9 dígitos"
-                                onkeypress="return (event.charCode >= 48 && event.charCode <= 57) && (this.value.length < 9) && (this.value.length === 0 ? event.key === '9' : true)">
+                                title="Ingrese el número de celular del dueño, debe empezar con 9 y tener 9 dígitos">
                             <div class="invalid-feedback" th:errors="*{persona.numeroCelular}"></div>
                         </div>
                     </div>
@@ -86,8 +84,7 @@
                             <input type="email" th:field="*{persona.correo}" id="correo" maxlength="100" minlength="9"
                                 th:classappend="${#fields.hasErrors('persona.correo')} ? 'is-invalid' : ''"
                                 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" class="form-control"
-                                title="Ingrese un correo válido" required
-                                onkeypress="return /^[a-zA-Z0-9@._-]$/.test(event.key)">
+                                title="Ingrese un correo válido" required>
                             <div class="invalid-feedback" th:errors="*{persona.correo}"></div>
                         </div>
                     </div>
@@ -102,8 +99,7 @@
                             <input type="text" th:field="*{nombre}" class="form-control text-capitalize" id="nombre"
                                 maxlength="40" minlength="2" required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"
                                 th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''"
-                                title="Ingrese los nombres de la mascota, entre 2 y 40 letras"
-                                onkeypress="return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/.test(event.key)">
+                                title="Ingrese los nombres de la mascota, entre 2 y 40 letras">
                             <div class="invalid-feedback" th:errors="*{nombre}"></div>
                         </div>
                     </div>
@@ -115,8 +111,7 @@
                             <input type="text" th:field="*{especie}" class="form-control text-capitalize" maxlength="40"
                                 minlength="2" id="especie" required
                                 th:classappend="${#fields.hasErrors('especie')} ? 'is-invalid' : ''"
-                                title="Ingrese la especie de la mascota, entre 2 y 40 caracteres"
-                                onkeypress="return /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$/.test(event.key)">
+                                title="Ingrese la especie de la mascota, entre 2 y 40 caracteres">
                             <div class="invalid-feedback" th:errors="*{especie}"></div>
                         </div>
                     </div>
@@ -124,12 +119,11 @@
                         <label class="col-form-label col-md-3 col-sm-3 label-align text-md-right" for="raza">
                             RAZA <span class="required text-danger">*</span>
                         </label>
-                        <div class="col-md-7 col-sm-7">
+                        <div class="col-md-7">
                             <input type="text" th:field="*{raza}" class="form-control text-capitalize" maxlength="40"
                                 minlength="2" id="raza" required
                                 th:classappend="${#fields.hasErrors('raza')} ? 'is-invalid' : ''"
-                                title="Ingrese la raza de la mascota, entre 2 y 40 caracteres"
-                                onkeypress="return /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$/.test(event.key)">
+                                title="Ingrese la raza de la mascota, entre 2 y 40 caracteres">
                             <div class="invalid-feedback" th:errors="*{raza}"></div>
                         </div>
                     </div>
@@ -158,7 +152,7 @@
                         <label class="col-form-label col-md-3 col-sm-3 label-align text-md-right" for="descripcion">
                             DESCRIPCIÓN <span class="required text-danger">*</span>
                         </label>
-                        <div class="col-md-7 col-sm-7">
+                        <div class="col-md-7">
                             <textarea th:field="*{descripcion}" class="form-control" id="descripcion" rows="3"
                                 maxlength="500" minlength="3" required
                                 th:classappend="${#fields.hasErrors('descripcion')} ? 'is-invalid' : ''"
@@ -174,7 +168,8 @@
                 </button>
                 <button type="button" class="btn btn-success btn-guardar border border-dark"
                     onclick="guardarData('/mascotas/guardar')">
-                    <i class="fa fa-save ml-1"></i> GUARDAR
+                    <i class="fa fa-save ml-1"></i>
+                    <span th:text="${mascota.idMascota == null} ? ' GUARDAR' : ' ACTUALIZAR'"></span>
                 </button>
             </div>
         </div>

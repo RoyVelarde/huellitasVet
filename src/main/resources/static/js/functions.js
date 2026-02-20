@@ -52,6 +52,8 @@ function abrirModal(url) {
                 validacionDinamica();
                 modalElement.on('shown.bs.modal', function () {
                     $(this).find('input:visible:first').focus();
+                    var ahora = new Date().toISOString().slice(0, 19);
+                    $('#fecha').val(ahora);
                 });
             }
         },
@@ -162,7 +164,7 @@ function buscarDuenio() {
     var btnBusqueda = $('.btn-busqueda');
     var originalHtml = btnBusqueda.html();
     btnBusqueda.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
-    $('#rol').val("Dueño");
+    $('#rol').val("DUEÑO");
     $('#idPersona').val("");
     $('#nombres').val("");
     $('#apellidos').val("");
@@ -205,6 +207,65 @@ function buscarDuenio() {
         },
         complete: function () {
             btnBusqueda.prop('disabled', false).html(originalHtml);
+        }
+    });
+}
+
+function buscarMascotasDuenio() {
+    var dni = $('#dniBusqueda').val();
+    if (!dni || dni.length != 8) {
+        Swal.fire('Atención', 'Ingrese un DNI válido para buscar', 'warning');
+        return;
+    }
+    $.ajax({
+        url: '/consultas/buscar-mascotas/' + dni,
+        type: 'GET',
+        success: function (mascotas) {
+            var selectMascota = $('#comboMascota');
+            selectMascota.empty();
+            selectMascota.append('<option value="">-- Seleccione --</option>');
+            if (mascotas && mascotas.length > 0) {
+                mascotas.forEach(function (mascota) {
+                    selectMascota.append(
+                        $('<option>', {
+                            value: mascota.idMascota,
+                            text: mascota.nombre + " (" + mascota.especie + ")"
+                        })
+                    );
+                });
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'info',
+                    title: 'Mascotas encontradas',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            } else {
+                mostrarAlertaRegistroMascota();
+            }
+        },
+        error: function (xhr) {
+            if (xhr.status === 404 || xhr.status === 204) {
+                mostrarAlertaRegistroMascota();
+            } else {
+                Swal.fire('Error', 'Hubo un problema en la búsqueda', 'error');
+            }
+        }
+    });
+}
+
+function mostrarAlertaRegistroMascota() {
+    Swal.fire({
+        title: 'Sin mascotas registradas',
+        text: 'Este dueño no tiene mascotas asociadas. Debe registrar la mascota primero.',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Ir a Registro de Mascotas',
+        cancelButtonText: 'Cerrar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = '/mascotas';
         }
     });
 }

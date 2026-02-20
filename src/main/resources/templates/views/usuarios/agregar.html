@@ -4,7 +4,9 @@
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title">
-                    <i class="fa fa-user-plus mr-2"></i> AGREGAR NUEVO USUARIO
+                    <i class="fa fa-user mr-2"></i>
+                    <span
+                        th:text="${usuario.idPersona == null} ? 'AGREGAR NUEVO USUARIO' : 'MODIFICAR DATOS DEL USUARIO'"></span>
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -21,8 +23,7 @@
                             <input type="text" th:field="*{dni}" class="form-control" id="dni" maxlength="8"
                                 minlength="8" th:classappend="${#fields.hasErrors('dni')} ? 'is-invalid' : ''"
                                 pattern="^(?!00)[0-9]{8}$" required
-                                title="Ingrese el número de DNI del usuario, no puede comenzar con '00' y debe tener 8 dígitos"
-                                onkeypress="return (event.charCode >= 48 && event.charCode <= 57) && (this.value.length < 8) && !(this.value === '0' && event.key === '0')">
+                                title="Ingrese el número de DNI del usuario, no puede comenzar con '00' y debe tener 8 dígitos">
                             <div class="invalid-feedback" th:errors="*{dni}"></div>
                         </div>
                     </div>
@@ -34,8 +35,7 @@
                             <input type="text" th:field="*{nombres}" class="form-control" id="nombres" maxlength="40"
                                 minlength="2" th:classappend="${#fields.hasErrors('nombres')} ? 'is-invalid' : ''"
                                 required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"
-                                title="Ingrese los nombres del usuario, entre 2 y 40 letras"
-                                onkeypress="return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/.test(event.key)">
+                                title="Ingrese los nombres del usuario, entre 2 y 40 letras">
                             <div class="invalid-feedback" th:errors="*{nombres}"></div>
                         </div>
                     </div>
@@ -47,8 +47,7 @@
                             <input type="text" th:field="*{apellidos}" class="form-control" id="apellidos"
                                 maxlength="75" minlength="2" required pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$"
                                 th:classappend="${#fields.hasErrors('apellidos')} ? 'is-invalid' : ''"
-                                title="Ingrese los apellidos del usuario, entre 2 y 75 letras"
-                                onkeypress="return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/.test(event.key)">
+                                title="Ingrese los apellidos del usuario, entre 2 y 75 letras">
                             <div class="invalid-feedback" th:errors="*{apellidos}"></div>
                         </div>
                     </div>
@@ -57,13 +56,14 @@
                             ROL <span class="required text-danger">*</span>
                         </label>
                         <div class="col-md-7">
-                            <select th:field="*{rol}" class="form-control" required
+                            <select th:field="*{rol}" class="form-control text-capitalize" required
                                 th:classappend="${#fields.hasErrors('rol')} ? 'is-invalid' : ''"
                                 title="Seleccione el rol del usuario">
                                 <option value="">-- Seleccione --</option>
                                 <option value="ADMIN">Administrador</option>
                                 <option value="RECEPCIONISTA">Recepcionista</option>
                                 <option value="VETERINARIO">Veterinario</option>
+                                <option value="DUEÑO">Dueño</option>
                             </select>
                             <div class="invalid-feedback" th:errors="*{rol}"></div>
                         </div>
@@ -76,8 +76,7 @@
                             <input type="text" th:field="*{numeroCelular}" class="form-control" id="numeroCelular"
                                 maxlength="9" minlength="9" pattern="^9[0-9]{8}$" required
                                 th:classappend="${#fields.hasErrors('numeroCelular')} ? 'is-invalid' : ''"
-                                title="Ingrese el número de celular del usuario, debe empezar con el número 9 y tener 9 dígitos"
-                                onkeypress="return (event.charCode >= 48 && event.charCode <= 57) && (this.value.length < 9) && (this.value.length === 0 ? event.key === '9' : true)">
+                                title="Ingrese el número de celular del usuario, debe empezar con el número 9 y tener 9 dígitos">
                             <div class="invalid-feedback" th:errors="*{numeroCelular}"></div>
                         </div>
                     </div>
@@ -85,12 +84,10 @@
                         <label class="col-md-3 label-align text-md-right" for="correo">
                             CORREO <span class="required text-danger">*</span>
                         </label>
-                        <div class="col-md-7 col-sm-7">
+                        <div class="col-md-7">
                             <input type="email" th:field="*{correo}" class="form-control" id="correo" maxlength="100"
                                 minlength="9" required title="Ingrese un correo válido"
-                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                                th:classappend="${#fields.hasErrors('correo')} ? 'is-invalid' : ''"
-                                onkeypress="return /^[a-zA-Z0-9@._-]$/.test(event.key)">
+                                th:classappend="${#fields.hasErrors('correo')} ? 'is-invalid' : ''">
                             <div class="invalid-feedback" th:errors="*{correo}"></div>
                         </div>
                     </div>
@@ -102,7 +99,8 @@
                 </button>
                 <button type="button" class="btn btn-success btn-guardar border border-dark"
                     onclick="guardarData('/usuarios/guardar')">
-                    <i class="fa fa-save ml-1"></i> GUARDAR
+                    <i class="fa fa-save ml-1"></i>
+                    <span th:text="${usuario.idPersona == null} ? ' GUARDAR' : ' ACTUALIZAR'"></span>
                 </button>
             </div>
         </div>
