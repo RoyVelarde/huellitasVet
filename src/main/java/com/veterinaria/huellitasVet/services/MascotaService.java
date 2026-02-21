@@ -10,6 +10,8 @@ import com.veterinaria.huellitasVet.models.Mascota;
 import com.veterinaria.huellitasVet.models.Persona;
 import com.veterinaria.huellitasVet.repositories.MascotaRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class MascotaService {
 
@@ -19,6 +21,7 @@ public class MascotaService {
     @Autowired
     private PersonaService personaService;
 
+    @Transactional
     public void guardar(Mascota mascota) {
         Persona personaFormulario = mascota.getPersona();
         Optional<Persona> personaOptional = personaService.buscarPorDni(personaFormulario.getDni());

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/gentelella}">
+
+<head>
+    <title>Ventas - Huellitas Vet</title>
+</head>
+
+<body>
+    <th:block layout:fragment="panel_title">
+        <h2>Gestionar Ventas</h2>
+    </th:block>
+    <div layout:fragment="content" class="mb-5">
+        <div class="mt-4 mb-4">
+            <button type="button" class="btn btn-dark btn-lg" onclick="abrirModal('/ventas/agregar')">
+                <i class="fa fa-plus-circle mr-2"></i> NUEVA VENTA
+            </button>
+        </div>
+        <div th:if="${#lists.isEmpty(ventas)}" class="alert alert-primary alert-dismissible fade show" role="alert">
+            No se encontraron registros de ventas en la base de datos.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div th:unless="${#lists.isEmpty(ventas)}" class="table-responsive">
+            <table class="table jambo_table table-bordered">
+                <thead>
+                    <tr class="headings">
+                        <th class="column-title text-center">ID</th>
+                        <th class="column-title">Fecha y Hora</th>
+                        <th class="column-title">Cliente</th>
+                        <th class="column-title text-center">Total Pagado</th>
+                        <th class="column-title text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="venta : ${ventas}" class="even pointer">
+                        <td th:text="${venta.idVenta}" class="align-middle text-center"></td>
+                        <td th:text="${#temporals.format(venta.fecha, 'dd/MM/yyyy HH:mm')}" class="align-middle"></td>
+                        <td th:text="|${venta.cliente.nombres} ${venta.cliente.apellidos}|"
+                            class="align-middle text-capitalize"></td>
+                        <td class="align-middle text-center">
+                            <strong th:text="|S/ ${venta.total}|"></strong>
+                        </td>
+                        <td class="align-middle text-center">
+                            <!--
+                            <a href="javascript:void(0)" class="text-info mr-2"
+                                th:onclick="|abrirModal('/ventas/editar/${venta.idVenta}')|" title="Editar">
+                                <i class="fa fa-pencil fa-lg"></i>
+                            </a>
+                            -->
+                            <a href="javascript:void(0)" class="text-danger ml-2"
+                                th:onclick="|eliminarData('/ventas/eliminar/${venta.idVenta}')|" title="Eliminar">
+                                <i class="fa fa-trash-o fa-lg"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

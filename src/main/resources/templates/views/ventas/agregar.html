@@ -1,0 +1,212 @@
+<div th:fragment="modalFormulario" class="modal fade" id="modalFormulario" tabindex="-1" role="dialog"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">
+                    <i class="fa fa-shopping-cart mr-2"></i>
+                    <span th:text="${venta.idVenta == null} ? 'REGISTRAR NUEVA VENTA' : 'MODIFICAR VENTA'"></span>
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body py-4">
+                <form id="formulario" class="form-horizontal" th:object="${venta}" autocomplete="off">
+                    <input type="hidden" th:field="*{idVenta}" id="idVenta">
+                    <input type="hidden" name="cliente.idPersona" id="idPersona"
+                        th:value="${venta.cliente != null ? venta.cliente.idPersona : ''}">
+                    <input type="hidden" th:field="*{total}" id="totalVentaInput">
+                    <div id="detallesOcultosContainer"></div>
+                    <div class="row">
+                        <div class="col-md-4 border-right">
+                            <h6 class="font-weight-bold border-bottom pb-2"><i class="fa fa-user"></i> Datos del Cliente
+                            </h6>
+                            <div class="form-group mt-3">
+                                <label for="dniBusqueda">
+                                    DNI del Cliente <span class="required text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" id="dniBusqueda" class="form-control"
+                                        th:value="${venta.cliente != null ? venta.cliente.dni : ''}">
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-info" onclick="buscarDuenio()">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="apellidos">
+                                    Apellidos del cliente <span class="required text-danger">*</span>
+                                </label>
+                                <input type="text" id="apellidos" class="form-control" readonly
+                                    th:value="${venta.cliente != null ? (venta.cliente.nombres + ' ' + venta.cliente.apellidos) : ''}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <h6 class="font-weight-bold border-bottom pb-2"><i class="fa fa-archive"></i> Selección de
+                                Productos</h6>
+                            <div class="row mt-3">
+                                <div class="col-md-10">
+                                    <select id="selectProducto" class="form-control select2">
+                                        <option value="">-- Seleccione un producto --</option>
+                                        <option th:each="p : ${productos}" th:value="${p.idProducto}"
+                                            th:data-precio="${p.precio}" th:data-stock="${p.stock}"
+                                            th:disabled="${p.stock <= 0}"
+                                            th:text="|${p.denominacion} (S/ ${p.precio} - Stock: ${p.stock})|">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-secondary btn-block"
+                                        onclick="agregarAlCarrito()">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-responsive mt-3" style="max-height: 300px;">
+                                <table class="table table-sm table-hover table-bordered" id="tablaDetalle">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th width="15%">Cantidad</th>
+                                            <th>Precio</th>
+                                            <th>Subtotal</th>
+                                            <th width="5%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-right mt-3 mb-5">
+                                <h3 class="font-weight-bold">TOTAL: S/ <span id="totalVentaLabel">0.00</span></h3>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">
+                    <i class="fa fa-times"></i> CANCELAR
+                </button>
+                <button type="button" class="btn btn-success px-4" onclick="validarYGuardar()">
+                    <i class="fa fa-save"></i>
+                    <span th:text="${venta.idVenta == null} ? 'GUARDAR' : 'ACTUALIZAR'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Inicializar datos si venimos de "Editar"
+        let detallesDeServidor = /*[[${venta.detalles}]]*/[];
+        let carrito = [];
+
+        function cargarEdicion() {
+            if (detallesDeServidor && detallesDeServidor.length > 0) {
+                carrito = detallesDeServidor.map(d => ({
+                    idProducto: d.producto.idProducto,
+                    nombre: d.producto.denominacion,
+                    precio: d.precioUnitario || d.producto.precio,
+                    cantidad: d.cantidad,
+                    stock: d.producto.stock + d.cantidad
+                }));
+                renderizarTabla();
+            }
+        }
+
+        function agregarAlCarrito() {
+            const select = document.getElementById('selectProducto');
+            const id = select.value;
+            const option = select.options[select.selectedIndex];
+            if (!id) {
+                Swal.fire('Atención', 'Seleccione un producto de la lista.', 'warning');
+                return;
+            }
+            const stock = parseInt(option.getAttribute('data-stock'));
+            const precio = parseFloat(option.getAttribute('data-precio'));
+            const nombre = option.text.split(' (')[0];
+            if (stock <= 0) {
+                Swal.fire('Sin Stock', 'Este producto no tiene existencias disponibles.', 'error');
+                return;
+            }
+            if (carrito.find(item => item.idProducto == id)) {
+                Swal.fire('Aviso', 'El producto ya está en el carrito.', 'info');
+                return;
+            }
+            carrito.push({ idProducto: id, nombre, precio, cantidad: 1, stock: stock });
+            renderizarTabla();
+        }
+
+        function cambiarCantidad(index, valor) {
+            const cant = parseInt(valor);
+            const item = carrito[index];
+            if (cant > item.stock) {
+                Swal.fire('Excede el Stock', `El stock máximo disponible es ${item.stock}`, 'warning');
+                item.cantidad = item.stock;
+            } else if (cant <= 0) {
+                item.cantidad = 1;
+            } else {
+                item.cantidad = cant;
+            }
+            renderizarTabla();
+        }
+
+        function eliminarItem(index) {
+            carrito.splice(index, 1);
+            renderizarTabla();
+        }
+
+        function renderizarTabla() {
+            const tbody = document.querySelector('#tablaDetalle tbody');
+            const containerOculto = document.getElementById('detallesOcultosContainer');
+            tbody.innerHTML = '';
+            containerOculto.innerHTML = '';
+            let totalGeneral = 0;
+            carrito.forEach((item, index) => {
+                const subtotal = item.precio * item.cantidad;
+                totalGeneral += subtotal;
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="align-middle">${item.nombre} <br><small class="text-muted">Stock Disp: ${item.stock}</small></td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm" 
+                                   value="${item.cantidad}" 
+                                   onchange="cambiarCantidad(${index}, this.value)">
+                        </td>
+                        <td class="align-middle">S/ ${item.precio.toFixed(2)}</td>
+                        <td class="align-middle font-weight-bold">S/ ${subtotal.toFixed(2)}</td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="eliminarItem(${index})">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+                containerOculto.innerHTML += `
+                    <input type="hidden" name="detalles[${index}].producto.idProducto" value="${item.idProducto}">
+                    <input type="hidden" name="detalles[${index}].cantidad" value="${item.cantidad}">
+                    <input type="hidden" name="detalles[${index}].precioUnitario" value="${item.precio}">`;
+            });
+            document.getElementById('totalVentaLabel').innerText = totalGeneral.toFixed(2);
+            document.getElementById('totalVentaInput').value = totalGeneral.toFixed(2);
+        }
+
+        function validarYGuardar() {
+            const idPersona = document.getElementById('idPersona').value;
+            if (!idPersona || idPersona === "") {
+                Swal.fire('Cliente requerido', 'Debe buscar y seleccionar un cliente por DNI.', 'warning');
+                return;
+            }
+            if (carrito.length === 0) {
+                Swal.fire('Venta vacía', 'Debe agregar al menos un producto al carrito.', 'warning');
+                return;
+            }
+            guardarData('/ventas/guardar');
+        }
+
+        cargarEdicion();
+    </script>
+</div>
