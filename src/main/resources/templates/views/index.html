@@ -1,18 +1,61 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/gentelella}">
+    layout:decorate="~{layouts/login}">
 
 <head>
-    <title>Inicio - Huellitas Vet</title>
+    <title>Login</title>
 </head>
 
-<body>
-    <th:block layout:fragment="panel_title">
-        Página de Inicio
-    </th:block>
+<body class="login">
     <div layout:fragment="content">
-        <p>Esta es una página en blanco basada en Gentelella para la veterinaria.</p>
+        <div class="login_wrapper">
+            <div class="animate form login_form">
+                <section id="login-section" class="login_content" th:data-error="${error}">
+                    <form th:action="@{/login}" method="POST" autocomplete="off">
+                        <h1>&nbsp;</h1>
+                        <div>
+                            <input type="text" name="username" class="form-control" placeholder="Nombre de usuario"
+                                required="" />
+                        </div>
+                        <div>
+                            <input type="password" name="password" class="form-control" placeholder="Contraseña"
+                                required="" />
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-info">
+                                <i class="fa fa-sign-in"></i> INGRESAR
+                            </button>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="separator">
+                            <div class="clearfix"></div>
+                            <br />
+                            <div>
+                                <h1>
+                                    <i class="fa fa-paw"></i> Huellitas Vet
+                                </h1>
+                                <p>©2026 Todos los derechos reservados</p>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
     </div>
+    <th:block layout:fragment="scripts">
+        <script>
+            const section = document.getElementById('login-section');
+            const errorMsg = section ? section.getAttribute('data-error') : null;
+            if (errorMsg && errorMsg !== '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de acceso',
+                    text: errorMsg,
+                    confirmButtonColor: '#17a2b8'
+                });
+            }
+        </script>
+    </th:block>
 </body>
 
 </html>
