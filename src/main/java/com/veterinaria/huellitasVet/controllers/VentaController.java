@@ -34,7 +34,7 @@ public class VentaController {
     }
 
     @GetMapping("/agregar")
-    public String nuevaVenta(Model model) {
+    public String agregar(Model model) {
         model.addAttribute("venta", new Venta());
         model.addAttribute("productos", productoService.listar());
         return "views/ventas/agregar :: modalFormulario";

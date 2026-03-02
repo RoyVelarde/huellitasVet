@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.veterinaria.huellitasVet.services.CuentaService;
 
-import jakarta.servlet.http.HttpSession;
-
 @Controller
 @RequestMapping("/")
 public class InicioController {

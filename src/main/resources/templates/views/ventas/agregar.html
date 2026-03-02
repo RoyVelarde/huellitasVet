@@ -101,22 +101,7 @@
     </div>
 
     <script th:inline="javascript">
-        // Inicializar datos si venimos de "Editar"
-        let detallesDeServidor = /*[[${venta.detalles}]]*/[];
         let carrito = [];
-
-        function cargarEdicion() {
-            if (detallesDeServidor && detallesDeServidor.length > 0) {
-                carrito = detallesDeServidor.map(d => ({
-                    idProducto: d.producto.idProducto,
-                    nombre: d.producto.denominacion,
-                    precio: d.precioUnitario || d.producto.precio,
-                    cantidad: d.cantidad,
-                    stock: d.producto.stock + d.cantidad
-                }));
-                renderizarTabla();
-            }
-        }
 
         function agregarAlCarrito() {
             const select = document.getElementById('selectProducto');
@@ -206,7 +191,5 @@
             }
             guardarData('/ventas/guardar');
         }
-
-        cargarEdicion();
     </script>
 </div>

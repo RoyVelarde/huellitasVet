@@ -40,7 +40,6 @@ public class MascotaController {
     @GetMapping("/agregar")
     public String agregar(Model model) {
         model.addAttribute("mascota", new Mascota());
-        // model.addAttribute("persona", new Persona());
         return "views/mascotas/agregar :: modalFormulario";
     }
 
